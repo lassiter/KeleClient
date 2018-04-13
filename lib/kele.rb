@@ -4,6 +4,7 @@ require 'json'
 class Kele
   include JSON
   include HTTParty
+    attr_reader :user
     def initialize(email, password)
       response = self.class.post(api_endpoint("sessions"), body: { "email": email, "password": password })
       raise "Email or password was incorrect" if response.code === 401
@@ -14,6 +15,13 @@ class Kele
       response = self.class.get(api_endpoint("users/me"), headers: { "authorization" => @auth_token })
       puts response.code
       puts @user = JSON.parse(response.body)
+    end
+    def get_mentor_availability
+      mentor_id = @user['current_enrollment']['mentor_id']
+      response = self.class.get(api_endpoint("mentors/#{mentor_id}/student_availability"), headers: { "authorization" => @auth_token })
+      puts response.code
+      puts @mentor_availablity = JSON.parse(response.body)
+      
     end
   private
     def api_endpoint(endpoint)
