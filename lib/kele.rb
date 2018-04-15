@@ -16,8 +16,7 @@ class Kele
       response = self.class.get(api_endpoint("users/me"), headers: {"authorization" => @auth_token })
       user = JSON.parse(response.body)
     end
-    def get_mentor_availability
-      mentor_id = @user['current_enrollment']['mentor_id']
+    def get_mentor_availability(mentor_id)
       response = self.class.get(api_endpoint("mentors/#{mentor_id}/student_availability"), headers: {"authorization" => @auth_token })
       mentor_availablity = JSON.parse(response.body)
     end
@@ -30,7 +29,7 @@ class Kele
       messages = JSON.parse(response.body)
     end
     def create_message(user_email, recipient_id, subject, token, stripped_text)
-      response = self.class.post(api_endpoint("messages"), body: { "sender": user_email, "recipient_id": recipient_id, "subject": subject, "token": token, "stripped-text": stripped_text }, headers: {"authorization" => @auth_token })
+      response = self.class.post(api_endpoint("messages"), body: { "sender": user_email, "recipient_id": recipient_id, "token": token, "subject": subject, "stripped-text": stripped_text }, headers: {"authorization" => @auth_token })
     end
   private
     def api_endpoint(endpoint)
